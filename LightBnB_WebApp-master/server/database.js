@@ -17,6 +17,8 @@ const users = require('./json/users.json');
  * @param {String} email The email of the user.
  * @return {Promise<{}>} A promise to the user.
  */
+
+/* original function:
 const getUserWithEmail = function(email) {
   let user;
   for (const userId in users) {
@@ -29,16 +31,53 @@ const getUserWithEmail = function(email) {
   }
   return Promise.resolve(user);
 }
-exports.getUserWithEmail = getUserWithEmail;
+ */
+const getUserWithEmail = function(email) {
+
+  return new Promise(function(resolve, reject) {
+    const queryString = `SELECT * FROM users WHERE email = $1`;
+    const values = [email];
+  
+    pool.query(queryString, values)
+    .then(res => {
+      // console.log(res.rows);
+      resolve(res.rows[0]) ;
+    })
+    .catch(err => null);
+  });
+}
+
+ exports.getUserWithEmail = getUserWithEmail;
 
 /**
  * Get a single user from the database given their id.
  * @param {string} id The id of the user.
  * @return {Promise<{}>} A promise to the user.
  */
+/* original function
 const getUserWithId = function(id) {
   return Promise.resolve(users[id]);
 }
+ */
+const getUserWithId = function(id) {
+  // console.log("get user with id line 63");
+
+  return new Promise(function(resolve, reject) {
+    const queryString = `SELECT * FROM users WHERE id = $1`;
+    const values = [id];
+  
+    pool.query(queryString, values)
+    .then(res => {
+      // console.log(res.rows);
+      return res.rows[0];
+    })
+    .catch(err => {
+      // console.log("line 74 db file");
+      return null});
+  
+  })
+}
+
 exports.getUserWithId = getUserWithId;
 
 
@@ -47,13 +86,32 @@ exports.getUserWithId = getUserWithId;
  * @param {{name: string, password: string, email: string}} user
  * @return {Promise<{}>} A promise to the user.
  */
+/* original function
 const addUser =  function(user) {
   const userId = Object.keys(users).length + 1;
   user.id = userId;
   users[userId] = user;
   return Promise.resolve(user);
 }
-exports.addUser = addUser;
+ */
+ const addUser =  function(user) {
+
+  return new Promise(function(resolve, reject) {
+    const queryString = `INSERT INTO users(name, email, password) VALUES($1, $2, $3) RETURNING *`;
+    const values = [user.name, user.email, user.password];
+  
+    pool.query(queryString, values)
+    .then(res => {
+      // console.log(res.rows);
+      resolve(res.rows[0]);
+    })
+    .catch(err => { 
+      // console.log("Error from .catch");
+      reject(err)} );
+  })
+}
+
+ exports.addUser = addUser;
 
 /// Reservations
 
@@ -63,8 +121,29 @@ exports.addUser = addUser;
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 
+/* original function 
 const getAllReservations = function(guest_id, limit = 10) {
   return getAllProperties(null, 2);
+}
+ */
+const getAllReservations = function(guest_id, limit = 5) {
+
+  return new Promise(function(resolve, reject) {
+    const queryString = `SELECT r.*, p.*, pr.* FROM  reservations r
+    JOIN properties p ON r.property_id = p.id
+    JOIN property_reviews pr ON r.id = pr.reservation_id
+    WHERE r.guest_id = $1`;
+    const values = [guest_id];
+  
+    pool.query(queryString, values)
+    .then(res => {
+      // console.log("line 140", res.rows[0]);
+      resolve(res.rows) ;
+    })
+    .catch(err => { 
+      console.log("Error from .catch line 144");
+      reject(err)} );
+  });
 }
 
 exports.getAllReservations = getAllReservations;
