@@ -15,7 +15,7 @@ module.exports = function(router, database) {
       res.error("💩");
       return;
     }
-    database.getAllReservations(userId)
+    database.getFulfilledReservations(userId)
     .then(reservations => res.send({reservations}))
     .catch(e => {
       console.error(e);
@@ -34,6 +34,59 @@ module.exports = function(router, database) {
         res.send(e)
       });
   });
+
+  router.post('/reservations', (req, res) => {
+    const userId = req.session.userId;
+    if (userId) {
+      database.addReservation({...req.body, guest_id: userId})
+      .then(reservation => {
+        res.send(reservation)
+      })
+      .catch(e => {
+        console.error(e);
+        res.send(e);
+      })
+    } 
+  }) 
+
+  router.get('/reservations/upcoming', (req, res) => {
+    const userId = req.session.userId;
+    if (!userId) {
+      res.error("💩");
+      return;      
+    }
+    database.getUpcomingReservations(userId)
+    .then(reservations => res.send({ reservations }))
+    .catch(e => {
+      console.error(e);
+      res.send(e);
+    })
+  })
+
+  router.get('/reservations/:reservation_id', (req, res) => {
+    const reservationId = req.params.reservation_id;
+    database.getIndividualReservation(reservationId)
+    .then(reservation => res.send(reservation))
+    .catch(e => {
+      console.error(e);
+      res.send(e);
+    })
+  })
+
+   // update an existing reservation
+   router.post('/reservations/:reservationId', (req, res) => {
+    const reservationId = req.params.reservationId;
+    database.updateReservation({...req.body, reservation_id: reservationId})
+    .then(reservation => {
+      res.send(reservation)
+    })
+  })
+
+   // delete a reservation
+   router.delete('/reservations/:reservationId', (req, res) => {
+    const reservationId = req.params.reservationId;
+    database.deleteReservation(reservationId);
+  })
 
   return router;
 }
