@@ -88,5 +88,14 @@ module.exports = function(router, database) {
     database.deleteReservation(reservationId);
   })
 
+  // get reviews by property
+  router.get('/reviews/:propertyId', (req, res) => {
+    const propertyId = req.params.propertyId
+    database.getReviewsByProperty(propertyId)
+    .then(reviews => {
+      res.send(reviews);
+    })
+  })
+
   return router;
 }

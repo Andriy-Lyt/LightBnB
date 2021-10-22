@@ -89,3 +89,26 @@ const deleteReservation = function(data) {
     url: `/api/reservations/${data.reservation_id}`
   })
 }
+
+const getReviewsByProperty = function(propertyId) {
+  const url = `api/reviews/${propertyId}`;
+  return $.ajax({
+    url,
+  });
+}
+
+const submitReview = function(data) {
+  return $.ajax({
+    method: "POST",
+    url: `api/reviews/${data.reservationId}`,
+    data,
+  })
+}
+
+router.post('/reviews/:reservationId', (req, res) => {
+  const reservationId = req.params.reservationId;
+  database.addReview({...req.body})
+  .then(review => {
+    res.send(review);
+  })
+})
