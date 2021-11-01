@@ -7,6 +7,7 @@ module.exports = function(router, database) {
     const user = req.body;
     user.password = bcrypt.hashSync(user.password, 12);
     database.addUser(user)
+    database.addUser(user)
     .then(user => {
       if (!user) {
         res.send({error: "error"});

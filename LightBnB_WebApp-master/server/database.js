@@ -114,7 +114,23 @@ const addUser =  function(user) {
  exports.addUser = addUser;
 
 /// Reservations
-
+/*   const getAllReservations = function(guest_id, limit = 10) {
+  const queryString = `
+  SELECT properties.*, reservations.*, avg(rating) as average_rating
+  FROM reservations
+  JOIN properties ON reservations.property_id = properties.id
+  JOIN property_reviews ON properties.id = property_reviews.property_id 
+  WHERE reservations.guest_id = $1
+  AND reservations.end_date < now()::date
+  GROUP BY properties.id, reservations.id
+  ORDER BY reservations.start_date
+  LIMIT $2;`;
+  const params = [guest_id, limit];
+  return pool.query(queryString, params)
+    .then(res => res.rows);
+}
+exports.getAllReservations = getAllReservations;
+ */
 /**
  * Get all reservations for a single user.
  * @param {string} guest_id The id of the user.
@@ -209,7 +225,7 @@ const getAllProperties = function (options, limit = 10) {
   queryString += `LIMIT $${queryParams.length}`;
 
   // 5
-  console.log("queryString", queryString);
+  // console.log("queryString", queryString);
 
   // 6
   return pool.query(queryString, queryParams)
@@ -217,6 +233,8 @@ const getAllProperties = function (options, limit = 10) {
     (res) => {
       //  console.log("line 221", res.rows[0].id);
       return res.rows;
+    })
+    .catch((err) => {console.log(err.message)
     });
 };
 
@@ -314,7 +332,7 @@ const updateReservation = function(reservationData) {
   }
   queryString += ` WHERE id = $${queryParams.length + 1} RETURNING *;`
   queryParams.push(reservationData.reservation_id);
-  console.log(queryString);
+  // console.log(queryString);
   return pool.query(queryString, queryParams)
     .then(res => res.rows[0])
     .catch(err => console.error(err));

@@ -25,7 +25,7 @@ $(() => {
         <ul>
           <li class="home">🏠</li>
           <li class="search_button">Search</li>
-          <li>${user.name}</li>
+          <li>Logged in as: ${user.name}</li>
           <li class="create_listing_button">Create Listing</li>
           <li class="my_listing_button">My Listings</li>
           <li class="my_reservations_button">My Reservations</li>
@@ -58,7 +58,7 @@ $(() => {
       })
       .catch(error => console.error(error));
   });
-  
+    
   $("header").on("click", '.my_listing_button', function() {
     propertyListings.clearListings();
     getAllListings(`owner_id=${currentUser.id}`)

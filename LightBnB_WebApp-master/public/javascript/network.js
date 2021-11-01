@@ -105,10 +105,3 @@ const submitReview = function(data) {
   })
 }
 
-router.post('/reviews/:reservationId', (req, res) => {
-  const reservationId = req.params.reservationId;
-  database.addReview({...req.body})
-  .then(review => {
-    res.send(review);
-  })
-})
