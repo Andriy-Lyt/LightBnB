@@ -52,3 +52,4 @@ to create the database for this project please follow the below steps:
 
 3. Run SQL commands in the migrations/01_schema.sql, seeds/01_seeds.sql, and seeds/02_seeds.sql files of this project.
 
+`Run` ```npm install`` to install npm packages needed for the project.
