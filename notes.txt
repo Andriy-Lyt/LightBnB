@@ -1,8 +1,0 @@
-SELECT properties.*, avg(property_reviews.rating) as average_rating
-  FROM properties
-  JOIN property_reviews ON properties.id = property_id
-  WHERE city LIKE '%anc%' AND properties.cost_per_night >= 0 AND properties.cost_per_night <= 100000
-  GROUP BY properties.id
-  HAVING avg(rating) >= 2 
-  ORDER BY cost_per_night
-  LIMIT 5;

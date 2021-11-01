@@ -41,3 +41,14 @@
   * `apiRoutes.js` and `userRoutes.js` are responsible for any HTTP requests to `/users/something` or `/api/something`. 
   * `json` is a directory that contains a bunch of dummy data in `.json` files.
   * `database.js` is responsible for all queries to the database. It doesn't currently connect to any database, all it does is return data from `.json` files.
+
+`Database setup`  
+to create the database for this project please follow the below steps:
+
+1. Create a new database by running SQL command:    
+
+    ```CREATE DATABASE IF NOT EXISTS lightbnb;```
+2. Adjust database user and password credentials in the server/database.js file of this project to correspond to your database crdentials.
+
+3. Run SQL commands in the migrations/01_schema.sql, seeds/01_seeds.sql, and seeds/02_seeds.sql files of this project.
+
