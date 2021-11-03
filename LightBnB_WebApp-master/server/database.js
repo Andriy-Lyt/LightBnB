@@ -18,20 +18,6 @@ const users = require('./json/users.json');
  * @return {Promise<{}>} A promise to the user.
  */
 
-/* original function:
-const getUserWithEmail = function(email) {
-  let user;
-  for (const userId in users) {
-    user = users[userId];
-    if (user.email.toLowerCase() === email.toLowerCase()) {
-      break;
-    } else {
-      user = null;
-    }
-  }
-  return Promise.resolve(user);
-}
- */
 const getUserWithEmail = function(email) {
 
   return new Promise(function(resolve, reject) {
@@ -40,7 +26,6 @@ const getUserWithEmail = function(email) {
   
     pool.query(queryString, values)
     .then(res => {
-      // console.log(res.rows);
       resolve(res.rows[0]) ;
     })
     .catch(err => null);
@@ -54,28 +39,21 @@ const getUserWithEmail = function(email) {
  * @param {string} id The id of the user.
  * @return {Promise<{}>} A promise to the user.
  */
-/* original function
-const getUserWithId = function(id) {
-  return Promise.resolve(users[id]);
-}
- */
-const getUserWithId = function(id) {
-  // console.log("get user with id line 63");
 
-  return new Promise(function(resolve, reject) {
+ const getUserWithId = function(id) {
+
+    return new Promise(function(resolve, reject) {
     const queryString = `SELECT * FROM users WHERE id = $1`;
     const values = [id];
   
     pool.query(queryString, values)
     .then(res => {
-      // console.log(res.rows);
-      return res.rows[0];
+      resolve(res.rows[0])  ;
     })
     .catch(err => {
-      // console.log("line 74 db file");
-      return null});
-  
-  })
+      resolve(null) ;
+    }); 
+  });
 }
 
 exports.getUserWithId = getUserWithId;
@@ -86,14 +64,7 @@ exports.getUserWithId = getUserWithId;
  * @param {{name: string, password: string, email: string}} user
  * @return {Promise<{}>} A promise to the user.
  */
-/* original function
-const addUser =  function(user) {
-  const userId = Object.keys(users).length + 1;
-  user.id = userId;
-  users[userId] = user;
-  return Promise.resolve(user);
-}
- */
+
  const addUser =  function(user) {
 
   return new Promise(function(resolve, reject) {
@@ -102,46 +73,21 @@ const addUser =  function(user) {
   
     pool.query(queryString, values)
     .then(res => {
-      // console.log(res.rows);
       resolve(res.rows[0]);
     })
     .catch(err => { 
-      // console.log("Error from .catch");
       reject(err)} );
   })
 }
 
  exports.addUser = addUser;
 
-/// Reservations
-/*   const getAllReservations = function(guest_id, limit = 10) {
-  const queryString = `
-  SELECT properties.*, reservations.*, avg(rating) as average_rating
-  FROM reservations
-  JOIN properties ON reservations.property_id = properties.id
-  JOIN property_reviews ON properties.id = property_reviews.property_id 
-  WHERE reservations.guest_id = $1
-  AND reservations.end_date < now()::date
-  GROUP BY properties.id, reservations.id
-  ORDER BY reservations.start_date
-  LIMIT $2;`;
-  const params = [guest_id, limit];
-  return pool.query(queryString, params)
-    .then(res => res.rows);
-}
-exports.getAllReservations = getAllReservations;
- */
 /**
  * Get all reservations for a single user.
  * @param {string} guest_id The id of the user.
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 
-/* original function 
-const getFulfilledReservations = function(guest_id, limit = 10) {
-  return getAllProperties(null, 2);
-}
- */
 const getFulfilledReservations = function(guest_id, limit = 10) {
   const queryString = `
   SELECT properties.*, reservations.*, avg(rating) as average_rating
@@ -166,17 +112,6 @@ exports.getFulfilledReservations = getFulfilledReservations;
  * @param {{}} options An object containing query options.
  * @param {*} limit The number of results to return.
  * @return {Promise<[{}]>}  A promise to the properties.
- */
-
-
-/* Original function
-const getAllProperties = function(options, limit = 10) {
-  const limitedProperties = {};
-  for (let i = 1; i <= limit; i++) {
-    limitedProperties[i] = properties[i];
-  }
-  return Promise.resolve(limitedProperties);
-}
  */
 
 const getAllProperties = function (options, limit = 10) {
@@ -224,14 +159,9 @@ const getAllProperties = function (options, limit = 10) {
   queryParams.push(limit); 
   queryString += `LIMIT $${queryParams.length}`;
 
-  // 5
-  // console.log("queryString", queryString);
-
-  // 6
   return pool.query(queryString, queryParams)
   .then(
     (res) => {
-      //  console.log("line 221", res.rows[0].id);
       return res.rows;
     })
     .catch((err) => {console.log(err.message)
@@ -247,15 +177,6 @@ exports.getAllProperties = getAllProperties;
  * @return {Promise<{}>} A promise to the property.
  */
 
-/* original function 
-const addProperty = function(property) {
-  const propertyId = Object.keys(properties).length + 1;
-  property.id = propertyId;
-  properties[propertyId] = property;
-  return Promise.resolve(property);
-}
- */
-
 const addProperty = function (property) {
 
   return new Promise(function(resolve, reject) {
@@ -269,11 +190,9 @@ const addProperty = function (property) {
   
     pool.query(queryString, values)
     .then(res => {
-      // console.log(res.rows);
       resolve(res.rows[0]);
     })
     .catch(err => { 
-      // console.log("Error from .catch");
       reject(err)} );
   })
 };
@@ -294,7 +213,6 @@ const addReservation = function(reservation) {
 exports.addReservation = addReservation;
 
 //  Gets upcoming reservations
-//
 const getUpcomingReservations = function(guest_id, limit = 10) {
   const queryString = `
   SELECT properties.*, reservations.*, avg(rating) as average_rating
@@ -332,7 +250,6 @@ const updateReservation = function(reservationData) {
   }
   queryString += ` WHERE id = $${queryParams.length + 1} RETURNING *;`
   queryParams.push(reservationData.reservation_id);
-  // console.log(queryString);
   return pool.query(queryString, queryParams)
     .then(res => res.rows[0])
     .catch(err => console.error(err));
@@ -349,6 +266,7 @@ const deleteReservation = function(reservationId) {
     .then(() => console.log("Successfully deleted!"))
     .catch(() => console.error(err));
 }
+exports.deleteReservation = deleteReservation;
 
 //Get indiv reservation
 const getIndividualReservation = function(reservationId) {

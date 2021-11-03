@@ -7,6 +7,7 @@ $(() => {
     currentUser = user;
     $pageHeader.find("#page-header__user-links").remove();
     let userLinks;
+    
 
     if (!user) {
       userLinks = `
@@ -25,7 +26,7 @@ $(() => {
         <ul>
           <li class="home">🏠</li>
           <li class="search_button">Search</li>
-          <li>Logged in as: ${user.name}</li>
+          <li>${user.name}</li>
           <li class="create_listing_button">Create Listing</li>
           <li class="my_listing_button">My Listings</li>
           <li class="my_reservations_button">My Reservations</li>
@@ -41,9 +42,11 @@ $(() => {
   window.header.update = updateHeader;
 
   getMyDetails()
-    .then(function( json ) {
-    updateHeader(json.user);
-  });
+    .then(function(json) {
+      updateHeader(json.user);
+    })
+    .catch(function(error) {
+    });
 
   $("header").on("click", '.my_reservations_button', function() {
     propertyListings.clearListings();
@@ -51,21 +54,20 @@ $(() => {
       .then(function(json) {
         propertyListings.addProperties(json.reservations, { upcoming: false });
         getUpcomingReservations()
-        .then(json => {
-          propertyListings.addProperties(json.reservations, { upcoming: true })
-        })
+          .then(json => {
+            propertyListings.addProperties(json.reservations, { upcoming: true })
+          })
         views_manager.show('listings');
       })
       .catch(error => console.error(error));
   });
-    
   $("header").on("click", '.my_listing_button', function() {
     propertyListings.clearListings();
     getAllListings(`owner_id=${currentUser.id}`)
       .then(function(json) {
         propertyListings.addProperties(json.properties);
         views_manager.show('listings');
-    });
+      });
   });
 
   $("header").on("click", '.home', function() {
@@ -74,7 +76,7 @@ $(() => {
       .then(function(json) {
         propertyListings.addProperties(json.properties);
         views_manager.show('listings');
-    });
+      });
   });
 
   $('header').on('click', '.search_button', function() {

@@ -1,8 +1,8 @@
-function getMyDetails() {
-  console.log("getMyDetails");
-  return $.ajax({
+async function getMyDetails() {
+  const res = await $.ajax({
     url: "/users/me",
   });
+  return res;
 }
 
 function logOut() {
@@ -69,7 +69,7 @@ function getUpcomingReservations() {
 }
 
 function getIndividualReservation(reservationId) {
-  let url = `/api/reservations/${reservationId}`
+  let url = `/api/reservations/${reservationId}`;
   return $.ajax({
     url,
   })
@@ -83,25 +83,24 @@ const updateReservation = function(data) {
   })
 }
 
-const deleteReservation = function(data) {
-  return $.ajax({
-    method: "DELETE",
-    url: `/api/reservations/${data.reservation_id}`
-  })
-}
-
 const getReviewsByProperty = function(propertyId) {
-  const url = `api/reviews/${propertyId}`;
+  const url = `/api/reviews/${propertyId}`;
   return $.ajax({
     url,
-  });
+  })
 }
 
 const submitReview = function(data) {
   return $.ajax({
     method: "POST",
-    url: `api/reviews/${data.reservationId}`,
+    url: `/api/reviews/${data.reservation_id}`,
     data,
   })
 }
 
+const deleteReservation = function(reservationId) {
+  return $.ajax({
+    method: "DELETE",
+    url: `/api/reservations/${reservationId}`
+  })
+}

@@ -23,12 +23,18 @@ $(() => {
       clearListings();
     }
     // check for user login
-    getMyDetails()
-    .then()
+    
+    getMyDetails()    
+    .then(function(){
+    })
+    .catch(function(error){
+    })
+
     for (const propertyId in properties) {
       const property = properties[propertyId];
       const listing = propertyListing.createListing(property, isReservation);
       addListing(listing);
+    
     }
     if (isReservation) {
       $('.update-button').on('click', function() {

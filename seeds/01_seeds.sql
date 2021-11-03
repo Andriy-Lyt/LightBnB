@@ -1,8 +1,3 @@
-INSERT INTO reservations (guest_id, property_id, start_date, end_date)
-VALUES (1, 1, '2018-09-11', '2018-09-26'),
-(2, 2, '2019-01-04', '2019-02-01'),
-(3, 3, '2021-10-01', '2021-10-14');
- 
 
 INSERT INTO users(name, email, password) 
 VALUES ('Eva Stanley', 'sebastianguerra@ymail.com', '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.'),
@@ -22,11 +17,17 @@ VALUES (1, 'Speed lamp', 'description', 'https://images.pexels.com/photos/208667
  
 
 INSERT INTO reservations (start_date, end_date, property_id, guest_id)
-VALUES ('2018-09-11', '2018-09-26', 2, 3),
+VALUES ('2018-09-11', '2018-09-26', 2, 2),
 ('2019-01-04', '2019-02-01', 2, 2),
-('2021-10-01', '2021-10-14', 1, 4);
+('2021-10-01', '2021-10-14', 1, 1);
+
+INSERT INTO reservations (guest_id, property_id, start_date, end_date)
+VALUES (1, 1, '2018-09-11', '2018-09-26'),
+(2, 2, '2019-01-04', '2019-02-01'),
+(3, 3, '2021-10-01', '2021-10-14');
  
 INSERT INTO property_reviews (guest_id, property_id, reservation_id, rating, message)
-VALUES (2, 3, 13, 3, 'messages'),
-(1, 2, 14, 2, 'messages'),
-(3, 1, 15, 1, 'messages'); 
+VALUES (2, 3, 3, 3, 'messages'),
+(1, 2, 1, 2, 'messages'),
+(3, 1, 2, 1, 'messages'); 
+
