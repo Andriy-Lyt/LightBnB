@@ -166,6 +166,7 @@ $(() => {
     event.preventDefault();
     views_manager.show('none');
     const formArray = $(this).serializeArray();
+    console.log(formArray);
     // check for presence of variables, if they're there, assign them
     if (formArray[0].value && formArray[1].value && formArray[2].value) {
       startDate = `${formArray[2].value}-${formArray[1].value}-${formArray[0].value}`
@@ -209,29 +210,23 @@ $(() => {
     }
   
     if ((startDate || endDate) && !errorMessage) {
-      const reservationId = $(this).find("#datatag-reservation-id").text();
+      const reservationId = $(this).find("#datatag h4").text();
       const dataObj = { start_date: startDate, end_date: endDate, reservation_id: reservationId };
-      updateReservation(dataObj)
-      .then(data => {
-        // console.log(`updated reservation: ${data}`);
-        views_manager.show('none');
-        propertyListings.clearListings();
-        getFulfilledReservations()
-          .then(function(json) {
-            propertyListings.addProperties(json.reservations, { upcoming: false });
-            getUpcomingReservations()
-            .then(json => {
-              propertyListings.addProperties(json.reservations, { upcoming: true })
-            })
-            views_manager.show('listings');
-          })
-      })
-      .catch(error => {
-        console.error(error);
-        views_manager.show('listings');
-      })
+      console.log(dataObj);
+    } else {
+      console.log(errorMessage);
+      // we can redisplay the form by pulling the information in the datatag!
+      const dataObj = {
+        id: $(this).find('#datatag-reservation-id').text(),
+        start_date: $(this).find('#datatag-start-date').text(),
+        end_date: $(this).find('#datatag-end-date').text(),
+        property_id: $(this).find('#datatag-property-id').text(),
+        error_message: errorMessage
+      }
+      views_manager.show('updateReservation', dataObj);
     }
   });
 
+  
   window.$updateReservationForm = $updateReservationForm;
 });

@@ -23,24 +23,17 @@ $(() => {
       clearListings();
     }
     // check for user login
-    
-    getMyDetails()    
-    .then(function(){
-    })
-    .catch(function(error){
-    })
-
+    getMyDetails()
+    .then()
     for (const propertyId in properties) {
       const property = properties[propertyId];
       const listing = propertyListing.createListing(property, isReservation);
       addListing(listing);
-    
     }
     if (isReservation) {
       $('.update-button').on('click', function() {
         const idData = $(this).attr('id').substring(16);
-        getIndividualReservation(idData)
-        .then(data => {
+        getIndividualReservation(idData).then(data => {
           views_manager.show("updateReservation", data);       
         });
       })
@@ -65,7 +58,6 @@ $(() => {
       })
     }
   }
-
   window.propertyListings.addProperties = addProperties;
 
 });

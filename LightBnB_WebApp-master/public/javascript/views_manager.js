@@ -31,7 +31,10 @@ $(() => {
         $signUpForm.appendTo($main);
         break;
       case 'newReservation':
+        console.log("data = ", data);
+        
       dataTag = `<h4>${data}</h4>`;
+      console.log("dataTag = ", dataTag);
       $newReservationForm.appendTo($main);
       $(dataTag).appendTo("#datatag");
       break;

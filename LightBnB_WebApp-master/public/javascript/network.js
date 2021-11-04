@@ -1,8 +1,7 @@
-async function getMyDetails() {
-  const res = await $.ajax({
+function getMyDetails() {
+  return $.ajax({
     url: "/users/me",
   });
-  return res;
 }
 
 function logOut() {
@@ -54,6 +53,7 @@ const submitProperty = function(data) {
 }
 
 const submitReservation = function(data) {
+  console.log("data = ", data);
   return $.ajax({
     method: "POST",
     url: "/api/reservations",

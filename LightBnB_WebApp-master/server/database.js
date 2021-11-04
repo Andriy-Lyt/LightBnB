@@ -115,13 +115,15 @@ exports.getFulfilledReservations = getFulfilledReservations;
  */
 
 const getAllProperties = function (options, limit = 10) {
+  // console.log("options", options);
+  
   // 1
   const queryParams = [];
   // 2
   let queryString = `
   SELECT properties.*, avg(property_reviews.rating) as average_rating, count(property_reviews.rating) as review_count
   FROM properties
-  JOIN property_reviews ON properties.id = property_id
+  LEFT JOIN property_reviews ON properties.id = property_id
   `;
 
   // 3 city
@@ -158,10 +160,14 @@ const getAllProperties = function (options, limit = 10) {
   //LIMIT
   queryParams.push(limit); 
   queryString += `LIMIT $${queryParams.length}`;
+  // console.log("queryString", queryString);
+  
 
   return pool.query(queryString, queryParams)
   .then(
     (res) => {
+      // console.log("res.rows", res.rows);
+      
       return res.rows;
     })
     .catch((err) => {console.log(err.message)
@@ -190,16 +196,19 @@ const addProperty = function (property) {
   
     pool.query(queryString, values)
     .then(res => {
-      resolve(res.rows[0]);
+      // console.log("add property, database.js, line 193 = ", res);
+      resolve(res.rows);
     })
     .catch(err => { 
       reject(err)} );
   })
 };
-
 exports.addProperty = addProperty;
 
+//Add reservarion
 const addReservation = function(reservation) {
+  // console.log("reservation = ", reservation);
+
   /*
    * Adds a reservation from a specific user to the database
    */
@@ -226,7 +235,10 @@ const getUpcomingReservations = function(guest_id, limit = 10) {
   LIMIT $2;`;
   const params = [guest_id, limit];
   return pool.query(queryString, params)
-    .then(res => res.rows);
+    .then(res => res.rows)
+    .catch((e) => {
+      console.log(e.message);
+    });
 }
 
 exports.getUpcomingReservations = getUpcomingReservations;
@@ -234,7 +246,8 @@ exports.getUpcomingReservations = getUpcomingReservations;
 //  Updates an existing reservation with new information
 //
 const updateReservation = function(reservationData) {
-  // base string
+  console.log("reservationData = ", reservationData);
+  
   let queryString = `UPDATE reservations SET `;
   const queryParams = [];
   if (reservationData.start_date) {
@@ -272,7 +285,10 @@ exports.deleteReservation = deleteReservation;
 const getIndividualReservation = function(reservationId) {
   const queryString = `SELECT * FROM reservations WHERE reservations.id = $1`;
   return pool.query(queryString, [reservationId])
-    .then(res => res.rows[0]);
+    .then(res => res.rows[0])
+    .catch((e) => {
+      console.log(e.message);
+    });
 }
 
 exports.getIndividualReservation = getIndividualReservation;

@@ -58,7 +58,6 @@ module.exports = function(router, database) {
     const userId = req.session.userId;
     if (!userId) {
       res.send({message: "not logged in"});
-
       return;
     }
 
@@ -71,6 +70,7 @@ module.exports = function(router, database) {
         }
 
         res.send({user: {name: user.name, email: user.email, id: userId}});
+        // console.log("userid in cookie: ", req.session.userId);
       })
       .catch(error => {
        return res.send(error);
