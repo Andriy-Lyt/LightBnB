@@ -93,12 +93,13 @@ const getFulfilledReservations = function(guest_id, limit = 10) {
   SELECT properties.*, reservations.*, avg(rating) as average_rating
   FROM reservations
   JOIN properties ON reservations.property_id = properties.id
-  JOIN property_reviews ON properties.id = property_reviews.property_id 
+  LEFT JOIN property_reviews ON properties.id = property_reviews.property_id 
   WHERE reservations.guest_id = $1
-  AND reservations.end_date < now()::date
   GROUP BY properties.id, reservations.id
   ORDER BY reservations.start_date
   LIMIT $2;`;
+  // console.log(queryString);
+  // AND reservations.end_date < now()::date
   const params = [guest_id, limit];
   return pool.query(queryString, params)
     .then(res => res.rows);
@@ -134,8 +135,14 @@ const getAllProperties = function (options, limit = 10) {
 
   //3.1 owner_id
   if (options.owner_id) {
-    queryParams.push(`${options.owner_id}`);
-    queryString += `AND properties.owner_id = $${queryParams.length} `;
+    if (queryParams.length === 0) {
+      queryParams.push(`${options.owner_id}`);
+      queryString += `WHERE properties.owner_id = $${queryParams.length} `;
+    }
+    else {
+      queryParams.push(`${options.owner_id}`);
+      queryString += `AND properties.owner_id = $${queryParams.length} `;
+    }
   }
 
   //3.2 min-max price
@@ -246,7 +253,6 @@ exports.getUpcomingReservations = getUpcomingReservations;
 //  Updates an existing reservation with new information
 //
 const updateReservation = function(reservationData) {
-  console.log("reservationData = ", reservationData);
   
   let queryString = `UPDATE reservations SET `;
   const queryParams = [];

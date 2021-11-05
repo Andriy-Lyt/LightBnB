@@ -1,3 +1,5 @@
+//browsers makes Ajax calls to the server
+
 function getMyDetails() {
   return $.ajax({
     url: "/users/me",

@@ -74,6 +74,7 @@ $(() => {
   $("header").on("click", '.home', function() {
     propertyListings.clearListings();
     getAllListings()
+    //browser receives data from the server:
       .then(function(json) {
         propertyListings.addProperties(json.properties);
         views_manager.show('listings');

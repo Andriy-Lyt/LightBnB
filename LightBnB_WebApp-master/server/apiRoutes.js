@@ -4,6 +4,9 @@ module.exports = function(router, database) {
     router.get('/properties', (req, res) => {
       // console.log("req.query:", req.query);
       database.getAllProperties(req.query, 20)
+      //server sends data back to the browser;
+      //browser generates html including thus data,
+      // properties var is the data sent back to the client
       .then(properties => res.send({properties}))
       .catch(e => {
         console.error(e);

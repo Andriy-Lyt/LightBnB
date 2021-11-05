@@ -25,8 +25,10 @@ $(() => {
     // check for user login
     getMyDetails()
     .then()
+    //the client updates the content of the web page
     for (const propertyId in properties) {
       const property = properties[propertyId];
+      //function generates HTML and appends to the page.
       const listing = propertyListing.createListing(property, isReservation);
       addListing(listing);
     }
