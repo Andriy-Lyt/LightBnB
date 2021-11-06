@@ -7,7 +7,11 @@ module.exports = function(router, database) {
       //server sends data back to the browser;
       //browser generates html including thus data,
       // properties var is the data sent back to the client
-      .then(properties => res.send({properties}))
+      .then(properties => {
+        res.send({properties});
+        console.log("get props route, props", properties.average_rating);
+        
+        })
       .catch(e => {
         console.error(e);
         res.send(e)
@@ -65,7 +69,6 @@ module.exports = function(router, database) {
       }
       database.getUpcomingReservations(userId)
       .then(reservations => { 
-        console.log("reservation apiRouites line 63: ", reservations);
         res.send({ reservations });
         })
       .catch(e => {
@@ -124,6 +127,7 @@ module.exports = function(router, database) {
       })
     })
   
+  //add a review
   router.post('/reviews/:reservation_id', (req, res) => {
     database.addReview(req.body)
       .then(review => {

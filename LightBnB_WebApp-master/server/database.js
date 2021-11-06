@@ -167,7 +167,7 @@ const getAllProperties = function (options, limit = 10) {
   //LIMIT
   queryParams.push(limit); 
   queryString += `LIMIT $${queryParams.length}`;
-  // console.log("queryString", queryString);
+  console.log("queryString get-all-props, db.js line 170", queryString);
   
 
   return pool.query(queryString, queryParams)
